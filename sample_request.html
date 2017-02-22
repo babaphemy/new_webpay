@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sample</title>
+        <link href="bootstrap.css" rel="stylesheet">
+
+          <script type="text/javascript" src="https://sandbox.interswitchng.com/collections/public/webpay.js"></script>
+
+          <script type="text/javascript" src="cryptojssha512.js"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+    </head>
+
+    <body>
+
+<script>
+$(document).ready(function (){
+  function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 7; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
+  $('#sendPayment').click(function(){
+
+var amount = $('#form-amount').val();
+var customerid = $('#form-customerid').val();
+var transRef = makeid();
+var redirect = "http://localhost/newwebpay/sample_request.html";
+var hashString = transRef+"1076101"+amount+redirect+"D3D1D05AFE42AD50818167EAC73C109168A0F108F32645C8B59E897FA930DA44F9230910DAC9E20641823799A107A02068F7BC0F4CC41D2952E249552255710F";
+var hash = CryptoJS.SHA512(hashString);
+console.log(hashString);
+
+  var iswPay = new IswPay({
+        postUrl:"https://sandbox.interswitchng.com/collections/w/pay",
+        amount: amount,
+        productId: "1076",
+        transRef: transRef,
+        siteName: "MK Intermedia",
+        itemId: "101",
+        customerId: customerid,
+        siteRedirectUrl: redirect,
+        currency: "NGN",
+        hash: hash,
+        onComplete : function (paymentResponse){
+            console.log(paymentResponse);
+        }
+
+    });
+  });
+  });
+    </script>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4 col-md-offset-4">
+            <form role="form" action="" method="post" enctype="multipart/form-data" class="login-form">
+                <div class="form-group">
+                    <label for="form-customerid">Customer ID</label>
+                    <input type="text" class="form-control" id="form-customerid" aria-describedby="emailHelp" placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="form-amount">Amount</label>
+                    <input type="text" class="form-control" id="form-amount" placeholder="Amount to Pay">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="sendPayment" name="sendPayment">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </body>
+
+</html>
